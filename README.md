@@ -75,12 +75,21 @@ sudo docker run hello-world
 
 In Jenkins dashboard
 
-- click on new item--> Name= Package ==> freestyle project
-- find source codemanagement, select git, put there https://github.com/jakubmichalko/jenkinsscripts
+- click on 'New Item'
+
+  - pick "Freestyle project"
+  - set iten mame to "WPPipeline"
+  - click "OK"
+
+- find Source Code Management
+- click on "git",
+- into 'Repository URL" put https://github.com/jakubmichalko/jenkinsscripts.git
+- in "Branches to build", specify "Branch Specifier" to `*/main`
+- clik "Save"
 
 ---
 
----
+## https://github.com/jakubmichalko/jenkinsscripts
 
 ---
 
