@@ -188,6 +188,16 @@ In Jenkins dashboard
   - Script Path: "Jenkinsfile"
 - clik "Save"
 
+# Setup credentials for dockerhub
+
+This is needed for using custom image.
+
+- manage Jenkins > find and click "Manage Credentials" > click "Jenkins" > "Global credentials" > clck "Add Credentials"
+- pick "Secret text"
+- into "secret" put valid DOCKERHUB_TOKEN
+- into ID put "dockerghub_token"
+- click "Create"
+
 ---
 
 # Run Deployment
