@@ -1,15 +1,17 @@
 # Table of Contents
 
-- [Installation](#installation)
-  - [Install Jenkins](#install-jenkins)
-  - [Install Docker](#install-docker)
-    - [Configure Docker](#configure-docker)
+- [Tools Installation](#tools-installation)
+  - [Install jenkins](#install-jenkins)
+  - [Install docker](#install-docker)
+    - [Config docker](#config-docker)
   - [Install Kubernetes](#install-kubernetes)
     - [Initiate Kube cluster](#initiate-kube-cluster)
   - [Setup the Calico network](#setup-the-calico-network)
+    - [Remove tain of the node](#remove-tain-of-the-node)
 - [Setup](#setup)
-  - [Setup Jenkins pipeline from Git](#setup-jenkins-pipeline-from-git)
-- [Setup Jenkins for GitHub](#setup-jenkins-for-github)
+  - [Setup jenkins pipeline from git](#setup-jenkins-pipeline-from-git)
+- [Run Deployment](#run-deployment)
+  - [https://github.com/jakubmichalko/jenkinsscripts](#https://github.com/jakubmichalko/jenkinsscripts)
 
 # Tools Installation
 
