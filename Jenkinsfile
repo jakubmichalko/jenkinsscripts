@@ -2,23 +2,24 @@ pipeline {
     agent any
     
     stages {
-        stage('Build') {
+        stage('List files') {
             steps {
-                echo 'Building...'
+                # files are alreadty cloned
+                echo 'ls'
+            }
+        }
+        stage('Prepare Image') {
+            steps {
+                sh 'docker build -t mywp .'
             }
         }
         
-        stage('Deploy') {
+        stage('run Kubernetes') {
             steps {
-                echo 'Deploying...'
+                sh 'kubectl create -f kubwp.yml'
             }
         }
         
-        stage('Test') {
-            steps {
-                echo 'Testing...'
-            }
-        }
         
         stage('Publish') {
             steps {

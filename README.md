@@ -1,6 +1,19 @@
-# Installation
+# Table of Contents
 
-## install jenkins
+- [Installation](#installation)
+  - [Install Jenkins](#install-jenkins)
+  - [Install Docker](#install-docker)
+    - [Configure Docker](#configure-docker)
+  - [Install Kubernetes](#install-kubernetes)
+    - [Initiate Kube cluster](#initiate-kube-cluster)
+  - [Setup the Calico network](#setup-the-calico-network)
+- [Setup](#setup)
+  - [Setup Jenkins pipeline from Git](#setup-jenkins-pipeline-from-git)
+- [Setup Jenkins for GitHub](#setup-jenkins-for-github)
+
+# Tools Installation
+
+## Install jenkins
 
 `Note: this may vary for different OS, see: https://www.jenkins.io/doc/book/installing/`
 
@@ -36,35 +49,109 @@ You will be on the dashboard
 
 ## Intall docker
 
-`Note: this may vary for different OS, see: https://docs.docker.com/engine/install/`
-
 ```sh
-# Add the repository to Apt sources:
-
+sudo su -
 sudo apt-get update
-sudo apt-get install ca-certificates curl
-sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
-sudo chmod a+r /etc/apt/keyrings/docker.asc
+sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
 
-# Add the repository to Apt sources:
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
-  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt-get update
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get update ; clear
+sudo apt-get install -y docker-ce
 ```
 
-Install the Docker packages.
+### config docker
 
 ```sh
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo vi /etc/docker/daemon.json
+```
+
+Press i and insert below content
+
+```json
+{
+  "exec-opts": ["native.cgroupdriver=systemd"]
+}
+```
+
+Save the file.
+
+```sh
+sudo service docker restart
 ```
 
 Verify that the installation is successful by running the hello-world image:
 
 ```sh
 sudo docker run hello-world
+```
+
+## Intall Kubernetes
+
+```sh
+echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+sudo apt-get update ; clear
+sudo apt-get install -y kubelet kubeadm kubectl
+```
+
+#### Initiate Kube cluster
+
+```sh
+sudo kubeadm init --ignore-preflight-errors=all
+```
+
+This lines are shown in after `sudo kubeadm init ...` command. So run them as well.
+
+```sh
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+
+## Setup the Calico network
+
+```sh
+sudo kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.24.1/manifests/calico.yaml
+```
+
+Wait some time and check if Kube Master is "Ready" or not
+
+```sh
+kubectl get nodes
+```
+
+### Remove tain of the node
+
+Run command
+
+```sh
+kubectl describe node
+```
+
+and find something like this (you need to scroll a bit):
+
+```
+Annotations:        kubeadm.alpha.kubernetes.io/cri-socket: /var/run/dockershim.sock
+                    node.alpha.kubernetes.io/ttl: 0
+                    projectcalico.org/IPv4Address: 172.31.26.47/20
+                    projectcalico.org/IPv4IPIPTunnelAddr: 192.168.31.128
+                    volumes.kubernetes.io/controller-managed-attach-detach: true
+CreationTimestamp:  Sat, 30 Mar 2024 22:45:42 +0000
+Taints:             node-role.kubernetes.io/master:NoSchedule
+Unschedulable:      false
+Lease:
+  HolderIdentity:  ip-172-31-26-47
+  AcquireTime:     <unset>
+  RenewTime:       Sat, 30 Mar 2024 23:01:34 +0000
+Conditions:
+
+```
+
+Use "Taints" and "HolderIdentity" in next command to remove taint:
+
+```sh
+kubectl taint node ip-172-31-26-47  node-role.kubernetes.io/master:NoSchedule
 ```
 
 ======================
@@ -77,14 +164,16 @@ In Jenkins dashboard
 
 - click on 'New Item'
 
-  - pick "Freestyle project"
+  - pick "Pipeline"
   - set iten mame to "WPPipeline"
   - click "OK"
 
-- find Source Code Management
-- click on "git",
-- into 'Repository URL" put https://github.com/jakubmichalko/jenkinsscripts.git
-- in "Branches to build", specify "Branch Specifier" to `*/main`
+- Scroll down to Definition
+- pick "pipeline from SCM"
+  - SCM pick "Git"
+  - into 'Repository URL" put https://github.com/jakubmichalko/jenkinsscripts.git
+  - in "Branches to build", specify "Branch Specifier" to `*/main`
+  - Script Path: "Jenkinsfile"
 - clik "Save"
 
 ---
