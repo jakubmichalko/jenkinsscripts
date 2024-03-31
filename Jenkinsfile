@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('List files') {
             steps {
-                # files are alreadty cloned
+                // files are alreadty cloned
                 echo 'ls'
             }
         }
@@ -20,12 +20,6 @@ pipeline {
             }
         }
         
-        
-        stage('Publish') {
-            steps {
-                echo 'Publishing...'
-            }
-        }
     }
 }
 
