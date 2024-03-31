@@ -23,7 +23,7 @@ pipeline {
         
         stage('run Kubernetes') {
             steps {
-                sh 'kubectl create -f kubwp.yml'
+                sh 'kubectl create -f kub2.yml'
             }
         }
         
