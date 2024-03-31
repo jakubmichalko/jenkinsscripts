@@ -86,6 +86,12 @@ Verify that the installation is successful by running the hello-world image:
 sudo docker run hello-world
 ```
 
+Allow jenkins to run docker.
+
+```sh
+sudo chmod 777 /var/run/docker.sock
+```
+
 ## Intall Kubernetes
 
 ```sh
@@ -150,9 +156,13 @@ Conditions:
 
 Use "Taints" and "HolderIdentity" in next command to remove taint:
 
+_Note: Don't forget to append '-' at the end._
+
 ```sh
-kubectl taint node ip-172-31-26-47  node-role.kubernetes.io/master:NoSchedule
+kubectl taint node ip-172-31-26-47  node-role.kubernetes.io/master:NoSchedule-
 ```
+
+On success should be displayed "untained".
 
 ======================
 
