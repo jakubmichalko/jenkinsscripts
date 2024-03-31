@@ -188,10 +188,13 @@ In Jenkins dashboard
 
 ---
 
+# Run Deployment
+
+- on Jenkins dasboard, open pipeline WPPipeline, and "Bulild now"
+- open terminal:
+  - run `kubectl get pods` to check, that all pods have been deployed and started. You should see mysql and wordpress.
+  - run `get services`, you should see _mysql_ and _wordpress_.
+  - get IP from _wordpress_ service and open it in browser
+    - now you should see wordpress application
+
 ## https://github.com/jakubmichalko/jenkinsscripts
-
----
-
-Setup jenkins for github:
-
-Source Control management:
